@@ -1,0 +1,229 @@
+.amap-logo {
+  display: none;
+  opacity: 0 !important;
+}
+.amap-copyright {
+  opacity: 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+#app {
+  margin-left: -4%;
+  background: url("../img/bg-img.png") no-repeat;
+}
+.head {
+  padding-left: 6%;
+}
+.head h1 {
+  color: #4cafc7;
+}
+#time {
+  color: #4cafc7;
+  font-size: 26px;
+  margin: 0.3% 10% 0 14%;
+  /* border: 1px solid #4cafc7; */
+  border-radius: 6%;
+}
+.weather {
+  color: #4cafc7;
+  margin: 0.3% 0 0 4%;
+  /* border: 1px solid #4cafc7; */
+  /* padding: 2%; */
+  padding-top: 0.2%;
+  font-size: 24px;
+  font-weight: bolder;
+}
+
+#review_box {
+  width: 42%;
+
+  margin-left: 0;
+  padding-top: 5%;
+}
+
+.content-left {
+  width: 42%;
+  margin-left: 3%;
+}
+.content-center {
+  width: 27%;
+  height: 100%;
+}
+.content-right {
+  width: 27%;
+  margin-left: 1%;
+}
+p {
+  color: #fff;
+}
+.el-table,
+.el-table__expanded-cell {
+  background-color: transparent !important;
+}
+
+.el-table th,
+.el-table tr {
+  /* border: 0 !important; */
+  background-color: transparent !important;
+}
+.el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: transparent !important;
+}
+.el-table thead {
+  color: #fff !important;
+}
+.el-table--border tr,
+td {
+  border: none !important;
+}
+.el-table::before {
+  height: 0;
+}
+.home {
+  width: 100%;
+  display: flex;
+}
+#map {
+  width: 90%;
+  height: 470px;
+  margin: -1% auto;
+}
+.map {
+  width: 90%;
+  margin: -1% auto;
+}
+.detail {
+  margin-top: -3.5%;
+  font-size: 26px;
+  font-weight: bolder;
+  text-align: center;
+  color: #4cafc7;
+}
+.details {
+  font-size: 26px;
+  font-weight: bolder;
+  text-align: center;
+  color: #4cafc7;
+}
+.map-img {
+  display: flex;
+
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.map-img div {
+  padding: 1%;
+  /* border: 1px solid #00b1df; */
+  box-shadow: 0 0 10px #00b1df;
+  margin-left: 1%;
+  border-radius: 5%;
+}
+.video {
+  width: 90%;
+  margin: 3% auto 0 auto;
+  border: 1px solid #00b1df;
+  box-shadow: 0 0 10px #00b1df;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.carousel {
+  width: 93%;
+  margin: 2% 0 0 6%;
+  border: 1px solid #00b1df;
+  box-shadow: 0 0 10px #00b1df;
+  border-radius: 3%;
+}
+.video-left {
+  width: 58%;
+}
+.video-left-content {
+  height: 440px;
+
+  overflow: auto;
+}
+.video-left-content::-webkit-scrollbar {
+  width: 10px;
+}
+/*定义滚动条轨道*/
+.video-left-content::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+/*定义滑块*/
+.video-left-content::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #00b1df;
+}
+.video-title {
+  margin: 4%;
+  color: #fff;
+}
+.video-content {
+  display: flex;
+  margin-top: 2%;
+  margin-left: 4%;
+  align-items: center;
+}
+.video :last-child {
+  margin-bottom: 2%;
+}
+.video-content-right {
+  text-align: center;
+  margin-left: 1%;
+}
+.video-content-right-content {
+  width: 140px;
+}
+.center-content {
+  padding: 2% 5% 1% 5%;
+  background-color: rgba(69, 117, 147, 0.2);
+}
+.center-content-img {
+  text-align: center;
+}
+.center-content-title {
+  display: flex;
+  justify-content: space-between;
+  /* margin-bottom: 1%; */
+}
+.center-content-table-box {
+  border: 1px solid #00b1df;
+  margin-bottom: 1%;
+  box-shadow: 0 0 10px #00b1df;
+}
+.table-title {
+  border-bottom: 1px solid #00b1df;
+}
+.table-title p {
+  text-align: center;
+  margin: 2%;
+}
+.echarts {
+  border: 1px solid #4cafc7;
+  box-shadow: 0 0 10px #00b1df;
+  margin: 3% 0;
+}
+.echarts-title {
+  border-bottom: 1px solid #4cafc7;
+  display: flex;
+  justify-content: space-around;
+}
+.echarts-title p {
+  text-align: center;
+  margin: 2%;
+}
+#echarts,
+#echartss,
+#echart,
+#echar {
+  width: 90%;
+  height: 230px;
+}
+
+[v-cloak] {
+  display: none;
+}

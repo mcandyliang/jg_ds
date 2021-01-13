@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,minimum-scale=1"
+    />
+
+    <title>剑阁县林产品信息化平台</title>
+    <link
+      rel="stylesheet"
+      href="./node_modules/element-ui/lib/theme-chalk/index.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/widgets.css" />
+  </head>
+  <body style="background-color: #102d46">
+    <div id="app">
+      <div style="display: flex">
+        <div class="head"><h1>剑阁县林产品信息化平台</h1></div>
+        <div id="time"></div>
+        <div class="weather">
+          <span v-cloak>{{type}}</span>
+          <span v-cloak>{{low}}</span>~
+          <span v-cloak>{{high}}</span>
+        </div>
+      </div>
+      <div class="home">
+        <div class="content-left" v-show="changeleft">
+          <el-button
+            @click="changeleft=!changeleft"
+            size="mini"
+            type="text"
+            style="margin-left: 6%; color: #4cafc7; font-weight: bolder"
+            ><img src="./img/转换.png" alt=""
+          /></el-button>
+          <div id="map"></div>
+          <!-- <div class="trailer"></div> -->
+          <div class="video">
+            <div class="video-left">
+              <div><p class="video-title">现场监控</p></div>
+              <!-- <marquee
+                behavior="scroll"
+                direction="up"
+                scrolldelay="10000"
+                scrollamount="260"
+                onMouseOver="this.stop()"
+                onMouseOut="this.start()"
+                style="height: 340px"
+              > -->
+              <div class="video-left-content">
+                <div v-for="(item,i) in devicelist" :key="i">
+                  <div
+                    class="video-content"
+                    @click="video_clcik(item.deviceSerial,item.lon,item.lat)"
+                  >
+                    <div :id="b+item.deviceSerial"></div>
+                    <div class="video-content-right">
+                      <!-- <button>播放</button>
+                  <button>暂停</button> -->
+                      <p class="video-content-right-content" v-cloak>
+                        {{item.deviceName}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <el-pagination
+                prev-text="上一页"
+                next-text="下一页"
+                layout="prev,  next"
+                background
+                :page-size="3"
+                :total="devicelist.length"
+                @current-change="handleCurrentChange"
+              >
+              </el-pagination> -->
+              <!-- </marquee> -->
+            </div>
+            <div id="review_box">
+              <marquee
+                behavior="scroll"
+                direction="up"
+                scrolldelay="40000"
+                scrollamount="260"
+                onMouseOver="this.stop()"
+                onMouseOut="this.start()"
+                style="height: 430px"
+                ><div
+                  v-for="(item,i) in imglist"
+                  :key="i"
+                  @click="open(item)"
+                  style="margin-left: 3%"
+                >
+                  <!-- <el-image
+                    :src="item"
+                    alt=""
+                    style="width: 95%"
+                    :preview-src-list="imglist"
+                  ></el-image> -->
+                  <img :src="item" alt="" style="width: 95%" />
+                </div>
+              </marquee>
+              <el-dialog :visible.sync="dialogTableVisible" width="70%">
+                <el-image
+                  :src="src"
+                  alt=""
+                  style="width: 95%"
+                  :preview-src-list="imglist"
+                ></el-image>
+              </el-dialog>
+            </div>
+          </div>
+        </div>
+        <div class="content-left" v-show="!changeleft">
+          <el-button
+            @click="changeleft=!changeleft"
+            size="mini"
+            type="text"
+            style="margin-left: 6%; color: #4cafc7; font-weight: bolder"
+            ><img src="./img/转换.png" alt=""
+          /></el-button>
+          <div class="map">
+            <p class="detail">林产品展柜</p>
+            <div class="map-img">
+              <div v-for="(item,i) in imagelist" :key="i">
+                <img :src="item" alt="" />
+              </div>
+            </div>
+            <div class="map-img">
+              <div v-for="(item,i) in imagelist1" :key="i">
+                <img :src="item" alt="" />
+              </div>
+            </div>
+          </div>
+          <div class="carousel">
+            <p class="details">林产品</p>
+
+            <el-carousel
+              :interval="5000"
+              style="text-align: center"
+              height="170px"
+            >
+              <el-carousel-item>
+                <img
+                  v-for="(item,i) in imageslist"
+                  :key="i"
+                  :src="item"
+                  alt=""
+                  width="28%"
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                />
+              </el-carousel-item>
+              <el-carousel-item v-if="imageslist2.length>0">
+                <img
+                  v-for="(item,i) in imageslist2"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                /> </el-carousel-item
+              ><el-carousel-item v-if="imageslist4.length>0">
+                <img
+                  v-for="(item,i) in imageslist4"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                /> </el-carousel-item
+              ><el-carousel-item v-if="imageslist6.length>0">
+                <img
+                  v-for="(item,i) in imageslist6"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                />
+              </el-carousel-item>
+            </el-carousel>
+            <el-carousel
+              :interval="4500"
+              style="text-align: center"
+              height="160px"
+            >
+              <el-carousel-item>
+                <img
+                  v-for="(item,i) in imageslist1"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                />
+              </el-carousel-item>
+              <el-carousel-item v-if="imageslist3.length>0">
+                <img
+                  v-for="(item,i) in imageslist3"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                /> </el-carousel-item
+              ><el-carousel-item v-if="imageslist5.length>0">
+                <img
+                  v-for="(item,i) in imageslist5"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                /> </el-carousel-item
+              ><el-carousel-item v-if="imageslist7.length>0">
+                <img
+                  v-for="(item,i) in imageslist7"
+                  :key="i"
+                  :src="item"
+                  width="28%"
+                  alt=""
+                  style="
+                    box-shadow: 0 0 10px #00b1df;
+                    border-radius: 5%;
+                    margin-right: 2%;
+                  "
+                />
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </div>
+        <div class="content-center">
+          <div class="center-content">
+            <div class="center-content-img">
+              <img src="./img/淘宝网.png" alt="" />
+            </div>
+            <div class="center-content-title">
+              <!-- <div>
+                <p>销售量： 1000000</p>
+              </div>
+              <div>
+                <p>销售金额： ￥10000000000</p>
+              </div> -->
+            </div>
+            <div class="center-content-table-box">
+              <div class="table-title">
+                <p>订单信息</p>
+              </div>
+              <el-table
+                :data="tableData"
+                style="width: 100%; color: #fff"
+                :header-cell-style="{'border-bottom':'1px solid #00b1df','height':'20px','padding': '2px'}"
+                :row-style="{ height: '20px' }"
+                :cell-style="{ padding: '1px' }"
+                height="120"
+                ref="table"
+                show-overflow-tooltip
+              >
+                <el-table-column
+                  prop="buyer_member_name"
+                  label="用户名"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="total_number_of_babies"
+                  label="销量"
+                  width="60"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="baby_title"
+                  label="商品名称"
+                  width="90"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="total_amount"
+                  label="总价"
+                  width="105"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+
+                <el-table-column
+                  prop="order_end_time"
+                  label="时间"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="echarts">
+              <div class="echarts-title">
+                <p>时间销量图</p>
+              </div>
+              <div id="echarts"></div>
+            </div>
+            <!-- <div class="echarts">
+              <div class="echarts-title">
+                <p>地区销量图</p>
+              </div>
+              <div id="echart"></div>
+            </div> -->
+          </div>
+          <div class="center-content">
+            <div class="center-content-img">
+              <img src="./img/京东 (4).png" alt="" />
+            </div>
+            <div class="center-content-title">
+              <!-- <div>
+                <p>销售量： 1000000</p>
+              </div>
+              <div>
+                <p>销售金额： ￥10000000000</p>
+              </div> -->
+            </div>
+            <div class="center-content-table-box">
+              <div class="table-title">
+                <p>订单信息</p>
+              </div>
+              <el-table
+                :data="tableDatass"
+                style="width: 100%; color: #fff"
+                :header-cell-style="{'border-bottom':'1px solid #00b1df','height':'20px','padding': '2px'}"
+                :row-style="{ height: '20px' }"
+                :cell-style="{ padding: '1px' }"
+                height="120"
+                ref="tabless"
+                show-overflow-tooltip
+              >
+                <el-table-column
+                  prop="name"
+                  label="用户名"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="sales"
+                  label="销量"
+                  width="60"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="names"
+                  label="商品名称"
+                  width="90"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="saleprice"
+                  label="单价"
+                  width="105"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="time"
+                  label="时间"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="echarts">
+              <div class="echarts-title">
+                <p>时间销量图</p>
+              </div>
+              <div id="echart"></div>
+            </div>
+            <!-- <div class="echarts">
+              <div class="echarts-title">
+                <p>地区销量图</p>
+              </div>
+              <div id="echart"></div>
+            </div> -->
+          </div>
+        </div>
+        <div class="content-right">
+          <div class="center-content">
+            <div class="center-content-img">
+              <img src="./img/拼多多.png" alt="" />
+            </div>
+            <div class="center-content-title">
+              <div></div>
+            </div>
+            <div class="center-content-table-box">
+              <div class="table-title">
+                <p>订单信息</p>
+              </div>
+              <el-table
+                :data="tableDatas"
+                style="width: 100%; color: #fff"
+                :header-cell-style="{'border-bottom':'1px solid #00b1df','height':'20px','padding': '2px'}"
+                :row-style="{ height: '20px' }"
+                :cell-style="{ padding: '1px' }"
+                height="120"
+                ref="tables"
+              >
+                <el-table-column
+                  prop="name"
+                  label="用户名"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="sales"
+                  label="销量"
+                  width="60"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="names"
+                  label="商品名称"
+                  show-overflow-tooltip
+                  width="90"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="saleprice"
+                  label="单价"
+                  width="105"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="time"
+                  label="时间"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="echarts">
+              <div class="echarts-title">
+                <p>时间销量图</p>
+                <!-- <div style="margin-top: 1.5%">
+                  <el-date-picker
+                    v-model="value1"
+                    type="date"
+                    placeholder="选择日期"
+                    size="mini"
+                  >
+                  </el-date-picker>
+                </div> -->
+              </div>
+              <div id="echartss"></div>
+            </div>
+            <!-- <div class="echarts">
+              <div class="echarts-title">
+                <p>地区销量图</p>
+              </div>
+              <div id="echar"></div>
+            </div> -->
+          </div>
+          <div class="center-content">
+            <div class="center-content-img">
+              <img src="./img/唯品会.png" alt="" />
+            </div>
+            <div class="center-content-title">
+              <div></div>
+            </div>
+            <div class="center-content-table-box">
+              <div class="table-title">
+                <p>订单信息</p>
+              </div>
+              <el-table
+                :data="tableDatasss"
+                style="width: 100%; color: #fff"
+                :header-cell-style="{'border-bottom':'1px solid #00b1df','height':'20px','padding': '2px'}"
+                :row-style="{ height: '20px' }"
+                :cell-style="{ padding: '1px' }"
+                height="120"
+                ref="tablesss"
+              >
+                <el-table-column
+                  prop="name"
+                  label="用户名"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="sales"
+                  label="销量"
+                  width="60"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="names"
+                  label="商品名称"
+                  width="90"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="saleprice"
+                  label="单价"
+                  width="105"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="time"
+                  label="时间"
+                  width="110"
+                  show-overflow-tooltip
+                >
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="echarts">
+              <div class="echarts-title">
+                <p>时间销量图</p>
+                <!-- <div style="margin-top: 1.5%">
+                  <el-date-picker
+                    v-model="value1"
+                    type="date"
+                    placeholder="选择日期"
+                    size="mini"
+                  >
+                  </el-date-picker>
+                </div> -->
+              </div>
+              <div id="echar"></div>
+            </div>
+            <!-- <div class="echarts">
+              <div class="echarts-title">
+                <p>地区销量图</p>
+              </div>
+              <div id="echar"></div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./js/vue.js"></script>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/jquery-1.11.1.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="./js/clock.js"></script>
+  <script src="./js/echarts.min.js"></script>
+  <script src="./js/video.js"></script>
+  <script type="text/javascript" src="./js/Cesium/Cesium.js"></script>
+  <script type="text/javascript" src="./js/ND-3DMap.js"></script>
+  <script src="./js/location.js"></script>
+  <script
+    type="text/javascript"
+    src="./node_modules/ezuikit-js/ezuikit.js"
+  ></script>
+  <script>
+    let electron = require("electron");
+    const { ipcRenderer } = electron;
+    new Vue({
+      el: "#app",
+      data: {
+        tableData: [],
+        tableDatass: [
+          {
+            name: "jd13215",
+            sales: "23",
+            names: "元宝枫茶",
+            saleprice: "28.00",
+            time: "2020-12-12 12:24:08",
+          },
+          {
+            name: "jdwsgfw",
+            sales: "17",
+            names: "绿邦核桃",
+            saleprice: "60.00",
+            time: "2020-12-12 11:23:39",
+          },
+          {
+            name: "jd0895",
+            sales: "75",
+            names: "橄榄油",
+            saleprice: "128.00",
+            time: "2020-12-14 20:25:39",
+          },
+          {
+            name: "jddog",
+            sales: "92",
+            names: "核桃仁",
+            saleprice: "88.00",
+            time: "2020-12-12 20:45:39",
+          },
+          {
+            name: "jd13215",
+            sales: "24",
+            names: "金丝黄菊",
+            saleprice: "66.00",
+            time: "2020-12-08 16:55:39",
+          },
+          {
+            name: "jd0587",
+            sales: "3",
+            names: "剑门石斛",
+            saleprice: "1280.00",
+            time: "2020-12-07 17:25:39",
+          },
+          {
+            name: "jd9527",
+            sales: "20",
+            names: "剑门皇菊",
+            saleprice: "28.00",
+            time: "2020-12-08 21:45:39",
+          },
+          {
+            name: "jd125",
+            sales: "8",
+            names: "葛根粉",
+            saleprice: "88.00",
+            time: "2020-12-07 19:25:39",
+          },
+          {
+            name: "jd09527",
+            sales: "2",
+            names: "葛根面",
+            saleprice: "68.00",
+            time: "2020-12-07 10:25:39",
+          },
+          {
+            name: "jd312587",
+            sales: "85",
+            names: "橄榄油",
+            saleprice: "128.00",
+            time: "2020-12-07 22:25:39",
+          },
+        ],
+        tableDatasss: [
+          {
+            name: "vip9527",
+            sales: "17",
+            names: "绿邦核桃",
+            saleprice: "60.00",
+            time: "2020-12-23 22:15:39",
+          },
+          {
+            name: "vipfw",
+            sales: "15",
+            names: "核桃仁",
+            saleprice: "88.00",
+            time: "2020-12-27 21:25:39",
+          },
+          {
+            name: "vip1123",
+            sales: "15",
+            names: "金丝皇菊",
+            saleprice: "66.00",
+            time: "2020-12-18 11:21:19",
+          },
+          {
+            name: "呵呵呵",
+            sales: "21",
+            names: "剑门黄菊",
+            saleprice: "28.00",
+            time: "2020-12-27 20:25:29",
+          },
+          {
+            name: "vip1424",
+            sales: "6",
+            names: "橄榄油",
+            saleprice: "158.00",
+            time: "2020-12-28 16:25:32",
+          },
+          {
+            name: "vip9823",
+            sales: "12",
+            names: "剑门石斛",
+            saleprice: "1280.00",
+            time: "2020-12-20 07:25:39",
+          },
+          {
+            name: "vip3058",
+            sales: "18",
+            names: "葛根粉",
+            saleprice: "88.00",
+            time: "2020-12-18 05:45:39",
+          },
+          {
+            name: "vip125614",
+            sales: "18",
+            names: "葛根面",
+            saleprice: "68.00",
+            time: "2020-12-07 19:25:39",
+          },
+          {
+            name: "vip35269",
+            sales: "2",
+            names: "元宝枫茶",
+            saleprice: "28.00",
+            time: "2020-12-07 10:25:39",
+          },
+          {
+            name: "vip12580",
+            sales: "100",
+            names: "绿邦核桃",
+            saleprice: "60.00",
+            time: "2020-12-07 22:25:39",
+          },
+        ],
+        tableDatas: [
+          {
+            name: "pdd13215",
+            sales: "2",
+            names: "橄榄油",
+            saleprice: "128.00",
+            time: "2020-12-07 20:25:39",
+          },
+          {
+            name: "wsgfw",
+            sales: "15",
+            names: "绿邦核桃",
+            saleprice: "60.00",
+            time: "2020-12-07 01:25:39",
+          },
+          {
+            name: "pdd12315",
+            sales: "14",
+            names: "核桃仁",
+            saleprice: "88.00",
+            time: "2020-12-08 10:25:39",
+          },
+          {
+            name: "阿巴阿巴",
+            sales: "1",
+            names: "剑门石斛",
+            saleprice: "1280.00",
+            time: "2020-12-07 00:45:39",
+          },
+          {
+            name: "pdd13215",
+            sales: "6",
+            names: "金丝皇菊",
+            saleprice: "66.00",
+            time: "2020-12-08 16:55:39",
+          },
+          {
+            name: "pdd0587",
+            sales: "1",
+            names: "剑门皇菊",
+            saleprice: "28.00",
+            time: "2020-12-07 21:25:39",
+          },
+          {
+            name: "pdd9527",
+            sales: "20",
+            names: "元宝枫茶",
+            saleprice: "28.00",
+            time: "2020-12-08 15:45:39",
+          },
+          {
+            name: "pdd125",
+            sales: "8",
+            names: "葛根粉",
+            saleprice: "88.00",
+            time: "2020-12-07 09:25:39",
+          },
+          {
+            name: "pdd09527",
+            sales: "2",
+            names: "葛根面",
+            saleprice: "68.00",
+            time: "2020-12-07 10:25:39",
+          },
+          {
+            name: "pdd312587",
+            sales: "100",
+            names: "橄榄油",
+            saleprice: "128.00",
+            time: "2020-12-07 22:25:39",
+          },
+        ],
+        devicelist: [],
+        devicelists: [
+          {
+            alt: "740.339711378366",
+            deviceName: "二龙绿邦核桃园监控(一)",
+            deviceSerial: "244952908",
+            lat: "32.150295",
+            lon: "105.470863",
+            status: 1,
+            type: "DS-2DE4223IW-D/GLT",
+          },
+          {
+            alt: "708.1229655219599",
+            deviceName: "二龙绿邦核桃园监控(二)",
+            deviceSerial: "244979540",
+            lat: "32.14092",
+            lon: "105.476312",
+            status: 1,
+            type: "DS-2DE4223IW-D/GLT",
+          },
+          {
+            alt: "676.030739840267",
+            deviceName: "二龙绿邦核桃园监控(三)",
+            deviceSerial: "244031793",
+            lat: "32.134909",
+            lon: "105.479538",
+            status: 1,
+            type: "DS-2DE4223IW-D/GLT",
+          },
+        ],
+        high: "",
+        low: "",
+        type: "",
+        value1: "",
+        b: "b",
+        accessToken: "",
+        playr: "",
+        imglist: [],
+        imagelist: [],
+        imagelist1: [],
+        imageslist: [],
+        imageslist1: [],
+        imageslist2: [],
+        imageslist3: [],
+        imageslist4: [],
+        imageslist5: [],
+        imageslist6: [],
+        imageslist7: [],
+
+        dialogTableVisible: false,
+        src: "",
+        changeleft: false,
+      },
+      methods: {
+        open(item) {
+          this.dialogTableVisible = true;
+          this.src = item;
+        },
+        getimage() {
+          let that = this;
+          let request = require("request");
+          request.post(
+            {
+              url: "http://cqset.com:3000/jiangeDataPlatform/commodityTop",
+              form: {},
+            },
+            function (e, r, data) {
+              let res = JSON.parse(data);
+              that.imagelist = res.data.slice(0, 3);
+              that.imagelist1 = res.data.slice(3, 6);
+              // console.log(data);
+            }
+          );
+        },
+        getimages() {
+          let that = this;
+          let request = require("request");
+          request.post(
+            {
+              url: "http://cqset.com:3000/jiangeDataPlatform/commodityBottom",
+              form: {},
+            },
+            function (e, r, data) {
+              let res = JSON.parse(data);
+              that.imageslist = res.data.slice(0, 3);
+              that.imageslist1 = res.data.slice(3, 6);
+              that.imageslist2 = res.data.slice(6, 9);
+              that.imageslist3 = res.data.slice(9, 12);
+              that.imageslist4 = res.data.slice(12, 15);
+              that.imageslist5 = res.data.slice(15, 18);
+              that.imageslist6 = res.data.slice(18, 21);
+              that.imageslist7 = res.data.slice(21, 24);
+
+              // console.log(res);
+            }
+          );
+        },
+        getimg() {
+          let that = this;
+          let endTime = Date.parse(new Date());
+          let startTime = Date.parse(new Date()) - 100000000;
+          // console.log(endTime, startTime);
+
+          let request = require("request");
+          request.post(
+            {
+              url: "http://www.cqset.com:3000/api/v2/device/capturelist",
+              form: {
+                departID: "1/183/",
+                startTime: startTime,
+                endTime: endTime,
+              },
+            },
+            function (e, r, data) {
+              let res = JSON.parse(data);
+              that.imglist = res.data.list;
+              // console.log(res.data.list);
+            }
+          );
+        },
+        video_clcik(deviceSerial, lon, lat) {
+          let p = gcj02towgs84(parseFloat(lon), parseFloat(lat));
+          window.viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(p[0], p[1], 1500.0),
+            orientation: {
+              heading: Cesium.Math.toRadians(-30.0),
+              pitch: Cesium.Math.toRadians(-80.0),
+              // roll : 0.0
+            },
+            duration: 2,
+          });
+          //window.NDMAP_SDK.flyTo_target(window.viewer,window.cameraMap.get(deviceSerial),{pitch:-80,range:5000})
+        },
+        device_clcik(id) {
+          let that = this;
+          let o = {
+            deviceSerial: id,
+            deviceName: window.cameraMap.get(id.toLocaleString()).name,
+            accessToken: this.accessToken,
+          };
+          that.devicelist.forEach((item) => {
+            if (id == item.deviceSerial) {
+              ipcRenderer.send("openvideo", o);
+            }
+          });
+        },
+        getechart() {
+          var myCharts = echarts.init(document.getElementById("echartss"));
+          var options = {
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                // 坐标轴指示器，坐标轴触发有效
+                type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
+              },
+            },
+            grid: {
+              left: "3%",
+              right: "4%",
+              bottom: "3%",
+              containLabel: true,
+            },
+            yAxis: {
+              type: "value",
+              show: false,
+            },
+            xAxis: {
+              type: "category",
+              data: ["0:00-12:00", "12:00-18:00", "18:00-24:00"],
+              axisLabel: {
+                show: true,
+                textStyle: {
+                  color: "#fff",
+                },
+              },
+              axisTick: {
+                //y轴刻度线
+                show: false,
+              },
+              splitLine: {
+                //网格线
+                show: false,
+              },
+              axisLine: {
+                //y轴
+                show: false,
+              },
+            },
+            series: [
+              {
+                name: "销量",
+                type: "bar",
+                stack: "总量",
+                itemStyle: {
+                  normal: {
+                    color: function (params) {
+                      var colorList = ["#EFE32B", "#72A3FF", "#0382CA"];
+                      return colorList[params.dataIndex];
+                    },
+                    barBorderColor: "#6E624E",
+                  },
+                },
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "#fff",
+                    fontSize: 25,
+                  },
+                  formatter: "{c}盒",
+                },
+                data: [40, 26, 103],
+              },
+            ],
+          };
+          myCharts.setOption(options);
+          var myCharts = echarts.init(document.getElementById("echart"));
+          var optionss = {
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                // 坐标轴指示器，坐标轴触发有效
+                type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
+              },
+            },
+            grid: {
+              left: "3%",
+              right: "4%",
+              bottom: "3%",
+              containLabel: true,
+            },
+            yAxis: {
+              type: "value",
+              show: false,
+            },
+            xAxis: {
+              type: "category",
+              data: ["0:00-12:00", "12:00-18:00", "18:00-24:00"],
+              axisLabel: {
+                show: true,
+                textStyle: {
+                  color: "#fff",
+                },
+              },
+              axisTick: {
+                //y轴刻度线
+                show: false,
+              },
+              splitLine: {
+                //网格线
+                show: false,
+              },
+              axisLine: {
+                //y轴
+                show: false,
+              },
+            },
+            series: [
+              {
+                name: "销量",
+                type: "bar",
+                stack: "总量",
+                itemStyle: {
+                  normal: {
+                    color: function (params) {
+                      var colorList = ["#EFE32B", "#72A3FF", "#0382CA"];
+                      return colorList[params.dataIndex];
+                    },
+                    barBorderColor: "#6E624E",
+                  },
+                },
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "#fff",
+                    fontSize: 25,
+                  },
+                  formatter: "{c}盒",
+                },
+                data: [19, 58, 272],
+              },
+            ],
+          };
+          myCharts.setOption(optionss);
+          var myCharts = echarts.init(document.getElementById("echar"));
+          var optionsss = {
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                // 坐标轴指示器，坐标轴触发有效
+                type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
+              },
+            },
+            grid: {
+              left: "3%",
+              right: "4%",
+              bottom: "3%",
+              containLabel: true,
+            },
+            yAxis: {
+              type: "value",
+              show: false,
+            },
+            xAxis: {
+              type: "category",
+              data: ["0:00-12:00", "12:00-18:00", "18:00-24:00"],
+              axisLabel: {
+                show: true,
+                textStyle: {
+                  color: "#fff",
+                },
+              },
+              axisTick: {
+                //y轴刻度线
+                show: false,
+              },
+              splitLine: {
+                //网格线
+                show: false,
+              },
+              axisLine: {
+                //y轴
+                show: false,
+              },
+            },
+            series: [
+              {
+                name: "销量",
+                type: "bar",
+                stack: "总量",
+                itemStyle: {
+                  normal: {
+                    color: function (params) {
+                      var colorList = ["#EFE32B", "#72A3FF", "#0382CA"];
+                      return colorList[params.dataIndex];
+                    },
+                    barBorderColor: "#6E624E",
+                  },
+                },
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "#fff",
+                    fontSize: 25,
+                  },
+                  formatter: "{c}盒",
+                },
+                data: [47, 24, 171],
+              },
+            ],
+          };
+          myCharts.setOption(optionsss);
+        },
+        getbar() {
+          let that = this;
+          let request = require("request");
+          let num = new Array();
+          request.post(
+            {
+              url: "http://www.cqset.com:3000/jiangeDataPlatform/salesColumn",
+              form: {
+                startDate: "2020-12-07 20:20:20",
+                endDate: "2020-12-24 20:20:20",
+              },
+            },
+            function (e, r, data) {
+              let res = JSON.parse(data);
+              // console.log(res.data);
+              res.data.forEach((item) => {
+                num.push(item.morning);
+                num.push(item.afternoon);
+                num.push(item.night);
+              });
+
+              var myCharts = echarts.init(document.getElementById("echarts"));
+              var option = {
+                tooltip: {
+                  trigger: "axis",
+                  axisPointer: {
+                    // 坐标轴指示器，坐标轴触发有效
+                    type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
+                  },
+                },
+                grid: {
+                  left: "3%",
+                  right: "4%",
+                  bottom: "3%",
+                  containLabel: true,
+                },
+                yAxis: {
+                  type: "value",
+                  show: false,
+                },
+                xAxis: {
+                  type: "category",
+                  data: ["0:00-12:00", "12:00-18:00", "18:00-24:00"],
+                  axisLabel: {
+                    show: true,
+                    textStyle: {
+                      color: "#fff",
+                    },
+                  },
+                  axisTick: {
+                    //y轴刻度线
+                    show: false,
+                  },
+                  splitLine: {
+                    //网格线
+                    show: false,
+                  },
+                  axisLine: {
+                    //y轴
+                    show: false,
+                  },
+                },
+                series: [
+                  {
+                    name: "销量",
+                    type: "bar",
+                    stack: "总量",
+                    itemStyle: {
+                      normal: {
+                        color: function (params) {
+                          var colorList = ["#EFE32B", "#72A3FF", "#0382CA"];
+                          return colorList[params.dataIndex];
+                        },
+                        barBorderColor: "#6E624E",
+                      },
+                    },
+                    label: {
+                      show: true,
+                      position: "top",
+                      formatter: "{c}盒",
+                      textStyle: {
+                        color: "#fff",
+                        fontSize: 25,
+                      },
+                    },
+                    data: num,
+                  },
+                ],
+              };
+
+              myCharts.setOption(option);
+            }
+          );
+        },
+        getweather() {
+          let that = this;
+          $.ajax({
+            type: "get",
+            url: "http://wthrcdn.etouch.cn/weather_mini?city=剑阁",
+            data: {},
+            success: function (data) {
+              let res = JSON.parse(data);
+              // console.log(res.data.forecast[0].type);
+              that.type = res.data.forecast[0].type;
+              that.high = res.data.forecast[0].high.substring(3, 6);
+              that.low = res.data.forecast[0].low.substring(3, 6);
+            },
+          });
+        },
+        gettableData() {
+          let that = this;
+          let request = require("request");
+          request.post(
+            {
+              url: "http://www.cqset.com:3000/jiangeDataPlatform/getData",
+              form: {
+                startDate: "2020-12-07 20:20:20",
+                endDate: "2020-12-24 20:20:20",
+              },
+            },
+            function (e, r, data) {
+              let res = JSON.parse(data);
+              that.tableData = res.data;
+              // console.log(res);
+            }
+          );
+        },
+        getData(cb) {
+          // let devicelists = this.devicelists;
+          let that = this;
+          $.ajax({
+            type: "post",
+            url: "http://www.cqset.com:3000/api/v2/device/devicelist",
+            data: {
+              departID: "1/183/",
+              page: "1",
+              pageSize: "14",
+            },
+            success: function (data) {
+              // console.log(data.data.list);
+              data.data.list.forEach((item) => {
+                if (item.status == 1) {
+                  that.devicelist.push(item);
+                  // that.devicelists = that.devicelist.slice(0, 3);
+                }
+              });
+              // console.log(that.data.data.list);
+              // console.log(that.devicelists);
+              cb(data.data.list);
+            },
+          });
+        },
+        render_device(deviceList) {
+          deviceList.forEach((item, index) => {
+            let p = gcj02towgs84(parseFloat(item.lon), parseFloat(item.lat));
+            let alt = 780;
+            if (item.alt.length > 0) alt = parseFloat(item.alt);
+            let position = {
+              lng: p[0],
+              lat: p[1],
+              alt: alt,
+            };
+            let options = {
+              id: item.deviceSerial,
+              name: item.deviceName,
+              icon: "./img/球机.png",
+            };
+            window.NDMAP_SDK.render_billboard(
+              window.viewer,
+              position,
+              options,
+              (entity) => {
+                window.cameraMap.set(item.deviceSerial, entity);
+                if (index == 5) {
+                  // let p = gcj02towgs84(parseFloat(lon), parseFloat(lat));
+                  window.viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(
+                      p[0],
+                      p[1],
+                      1500.0
+                    ),
+                    orientation: {
+                      heading: Cesium.Math.toRadians(-30.0),
+                      pitch: Cesium.Math.toRadians(-80.0),
+                      // roll : 0.0
+                    },
+                    duration: 2,
+                  });
+                }
+              }
+            );
+          });
+        },
+        getvideo() {
+          let that = this;
+          $.ajax({
+            type: "post",
+            url: "http://www.cqset.com:3000/api/v2/token/accesstoken-get",
+            data: {},
+            success: function (data) {
+              // console.log(data);
+              let token = data.data.accessToken;
+              that.accessToken = token;
+              // console.log(that.devicelists);
+              that.devicelist.forEach((item) => {
+                var playr = new EZUIKit.EZUIKitPlayer({
+                  id: "b" + item.deviceSerial, // 视频容器ID
+                  audio: 0,
+                  accessToken: token,
+                  url: video(item.deviceSerial),
+                  template: that.template, // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版；
+                  autoplay: true,
+                  handleSuccess: (data = function () {
+                    console.log("播放成功回调", data);
+                  }),
+                  handleError: (data = function () {
+                    that.getvideo();
+                  }),
+                  handleTalkSuccess: () => console.log("对讲成功回掉"),
+                  handleTalkError: (data = function () {
+                    console.log("对讲失败", data);
+                  }),
+                  width: 250,
+                  height: 135,
+                  bSupporDoubleClickFull: true,
+                  env: {
+                    //domain: 'https://open.ys7.com',
+                    filePathDomain: "http://y.ys7.com:3100",
+                  },
+                });
+                that.playr = playr;
+              });
+            },
+          });
+        },
+      },
+
+      mounted() {
+        this.getimage();
+        this.getimages();
+
+        this.getimg();
+        setInterval(this.getimg, 18000000);
+        let that = this;
+        this.getechart();
+
+        this.getbar();
+        setInterval(this.getbar, 300000);
+        this.getweather();
+        setInterval(this.getweather, 18000000);
+        this.getData((deviceList) => {
+          that.render_device(deviceList);
+        });
+
+        setInterval(this.gettableData, 300000);
+        this.gettableData();
+        // 拿到表格挂载后的真实DOM
+        const table = this.$refs.table;
+        // 拿到表格中承载数据的div元素
+        const divData = table.bodyWrapper;
+        // 拿到元素后，对元素进行定时增加距离顶部距离，实现滚动效果(此配置为每100毫秒移动1像素)
+        var time = setInterval(() => {
+          // 元素自增距离顶部1像素
+          divData.scrollTop += 1;
+          // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+          if (
+            divData.clientHeight + divData.scrollTop ==
+            divData.scrollHeight
+          ) {
+            // 重置table距离顶部距离
+            divData.scrollTop = 0;
+          }
+        }, 100);
+        divData.onmouseover = function () {
+          clearInterval(time);
+        };
+        divData.onmouseout = function () {
+          time = setInterval(() => {
+            // 元素自增距离顶部1像素
+            divData.scrollTop += 1;
+            // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+            if (
+              divData.clientHeight + divData.scrollTop ==
+              divData.scrollHeight
+            ) {
+              // 重置table距离顶部距离
+              divData.scrollTop = 0;
+            }
+          }, 100);
+        };
+        // 拿到表格挂载后的真实DOM
+        const tables = this.$refs.tables;
+        // 拿到表格中承载数据的div元素
+        const divDatas = tables.bodyWrapper;
+        // 拿到元素后，对元素进行定时增加距离顶部距离，实现滚动效果(此配置为每100毫秒移动1像素)
+        var timeout = setInterval(() => {
+          // 元素自增距离顶部1像素
+          divDatas.scrollTop += 1;
+          // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+          if (
+            divDatas.clientHeight + divDatas.scrollTop ==
+            divDatas.scrollHeight
+          ) {
+            // 重置table距离顶部距离
+            divDatas.scrollTop = 0;
+          }
+        }, 100);
+        divDatas.onmouseover = function () {
+          clearInterval(timeout);
+        };
+        divDatas.onmouseout = function () {
+          timeout = setInterval(() => {
+            divDatas.scrollTop += 1;
+            if (
+              divDatas.clientHeight + divDatas.scrollTop ==
+              divDatas.scrollHeight
+            ) {
+              divDatas.scrollTop = 0;
+            }
+          }, 100);
+        };
+        window.cameraMap = new Map();
+        //let viewer = new Cesium.Viewer("earth");
+        window.NDMAP_SDK = new NDMAPKIT();
+        // console.log(sdk_kit);
+        // let xx = sdk_kit.__proto__.constructor.prototype;
+        window.NDMAP_SDK.globe_init("map", (res) => {
+          window.viewer = res;
+          window.NDMAP_SDK.reg_mouse_click(window.viewer, (id) => {
+            if (id != null) that.device_clcik(id);
+          });
+        });
+        this.getvideo();
+        setInterval(this.getvideo, 18000000);
+        // 拿到表格挂载后的真实DOM
+        const tabless = this.$refs.tabless;
+        // 拿到表格中承载数据的div元素
+        const divDatass = tabless.bodyWrapper;
+        // 拿到元素后，对元素进行定时增加距离顶部距离，实现滚动效果(此配置为每100毫秒移动1像素)
+        var times = setInterval(() => {
+          // 元素自增距离顶部1像素
+          divDatass.scrollTop += 1;
+          // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+          if (
+            divDatass.clientHeight + divDatass.scrollTop ==
+            divDatass.scrollHeight
+          ) {
+            // 重置table距离顶部距离
+            divDatass.scrollTop = 0;
+          }
+        }, 100);
+        divDatass.onmouseover = function () {
+          clearInterval(times);
+        };
+        divDatass.onmouseout = function () {
+          times = setInterval(() => {
+            // 元素自增距离顶部1像素
+            divDatass.scrollTop += 1;
+            // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+            if (
+              divDatass.clientHeight + divDatass.scrollTop ==
+              divDatass.scrollHeight
+            ) {
+              // 重置table距离顶部距离
+              divDatass.scrollTop = 0;
+            }
+          }, 100);
+        };
+        // 拿到表格挂载后的真实DOM
+        const tablesss = this.$refs.tablesss;
+        // 拿到表格中承载数据的div元素
+        const divDatasss = tablesss.bodyWrapper;
+        // 拿到元素后，对元素进行定时增加距离顶部距离，实现滚动效果(此配置为每100毫秒移动1像素)
+        var timess = setInterval(() => {
+          // 元素自增距离顶部1像素
+          divDatasss.scrollTop += 1;
+          // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+          if (
+            divDatasss.clientHeight + divDatasss.scrollTop ==
+            divDatasss.scrollHeight
+          ) {
+            // 重置table距离顶部距离
+            divDatasss.scrollTop = 0;
+          }
+        }, 100);
+        divDatasss.onmouseover = function () {
+          clearInterval(timess);
+        };
+        divDatasss.onmouseout = function () {
+          timess = setInterval(() => {
+            // 元素自增距离顶部1像素
+            divDatasss.scrollTop += 1;
+            // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
+            if (
+              divDatasss.clientHeight + divDatasss.scrollTop ==
+              divDatasss.scrollHeight
+            ) {
+              // 重置table距离顶部距离
+              divDatasss.scrollTop = 0;
+            }
+          }, 100);
+        };
+      },
+      beforeDestroy() {
+        clearInterval(setInterval(this.gettableData, 300000));
+        clearInterval(setInterval(this.getbar, 300000));
+        clearInterval(setInterval(this.getvideo, 18000000));
+        clearInterval(setInterval(this.getimg, 18000000));
+        clearInterval(setInterval(this.getweather, 18000000));
+        clearInterval(
+          setInterval((deviceList) => {
+            that.render_device(deviceList);
+          }, 300000)
+        );
+      },
+    });
+  </script>
+</html>

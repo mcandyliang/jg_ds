@@ -1,0 +1,22 @@
+{
+  "name": "SC-JG",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "chcp 65001 && cross-env NODE_ENV=development electron .",
+    "build-win": " chcp 65001 && electron-packager . JGClient --asar --out=./out --overwrite  --platform=win32  --app-version=1.0.0  --prune=true --arch=x64 --electron-version=11.0.4 --icon=img/logo.ico"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cross-env": "^7.0.3",
+    "electron": "^11.0.4",
+    "electron-packager": "^15.2.0",
+    "element-ui": "^2.14.1",
+    "express": "^4.17.1",
+    "ezuikit-js": "^0.2.2",
+    "request": "^2.88.2"
+  }
+}
